@@ -1,0 +1,40 @@
+﻿@page "/"
+
+
+<div class="container">
+    <div class="jumbotron text-center">
+        <h1>Matrix calc</h1>
+        <h8>
+            #19 - 14 variant
+        </h8>
+        <h7>
+            Приведення до нижнього дводіагонального вигляду перетвореннями
+            Хаусхолдера
+        </h7>
+    </div>
+    <div class="my-3">
+        <div class="btn btn-secondary btn-file">
+            Import from CSV <input type="file" onchange="handleFileSelect(this.files);"/>
+        </div>
+    </div>
+     <Matrix Value="@matrix" ValueChanged="@((m) => matrix = (int[,])m)"></Matrix>
+</div>
+
+@functions {
+    int[,] matrix = new int[5,5];
+
+
+    protected override void OnInit()
+    {
+        base.OnInit();
+        CsvImport.OnImport += ExportCsv;
+    }
+
+    void ExportCsv(object sender, CsvImport import)
+    {
+        matrix = import.Result;
+        this.StateHasChanged();
+    }
+
+}
+

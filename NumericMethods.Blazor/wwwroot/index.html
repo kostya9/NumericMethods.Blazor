@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+    <title>NumericMethods.Blazor</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <app>Loading...</app>
+
+    <script type="blazor-boot">
+    </script>
+    <script>
+        function arrayBufferToBase64(buff) {
+            var alph = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+                enc = "",
+                n, p, bits;
+            d = new Uint8Array(buff);
+            var len = buff.byteLength * 8;
+            for (var offset = 0; offset < len; offset += 6) {
+                n = (offset / 8) | 0;
+                p = offset % 8;
+                bits = ((d[n] || 0) << p) >> 2;
+                if (p > 2) { bits |= (d[n + 1] || 0) >> (10 - p) }
+                enc += alph.charAt(bits & 63);
+            }
+            enc += (p == 4) ? '=' : (p == 6) ? '==' : '';
+            return enc;
+        }
+
+        function handleFileSelect(files) {
+            var file = files[0];
+            var reader = new FileReader();
+
+            reader.onloadend = function (evt) {
+                if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+                    let messageAsDotNetString = Blazor.platform.toDotNetString(arrayBufferToBase64(evt.target.result));
+
+                    const decompileMethod = Blazor.platform.findMethod(
+                        'NumericMethods.Blazor',   // Assembly name
+                        'NumericMethods.Blazor.Import',   // Namespace
+                        'CsvImport',            // Class name
+                        'FromFile'      // Method name
+                    );
+
+                    Blazor.platform.callMethod(
+                        decompileMethod,         // Method handle
+                        null,                       // Target
+                        [messageAsDotNetString]   // Arguments
+                    );
+                }
+            };
+            var blob = file.slice(0, file.size);
+            reader.readAsArrayBuffer(blob);
+        }
+    </script>
+</body>
+</html>
