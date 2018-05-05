@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="7.1.0" />
+    <PackageReference Include="MathNet.Numerics" Version="4.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.3.0" />
     <DotNetCliToolReference Include="Microsoft.AspNetCore.Blazor.Cli" Version="0.3.0" />
@@ -24,10 +25,34 @@
 
   <ItemGroup>
     <None Include="Shared\Matrix.cshtml" />
+    <None Include="Shared\ReadonlyHouseholders.cshtml" />
+    <None Include="Shared\ReadonlyMatrix.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="SVD\" />
+    <BlazorGenerate Remove="Shared\ReadonlyMatrix.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Shared\ReadonlyMatrix.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <BlazorGenerate Remove="Shared\ReadonlyHouseholders.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Shared\ReadonlyHouseholders.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <BlazorGenerate Remove="Shared\_ViewImports.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Shared\_ViewImports.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>

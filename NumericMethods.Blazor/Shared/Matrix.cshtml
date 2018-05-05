@@ -17,10 +17,12 @@
 <table>
     @for (var r = 0; r < Value.GetLength(0); r++)
     {
+        var row = r;
         <tr>
             @for (var c = 0; c < Value.GetLength(1); c++)
-            {
-                <td><input type="number" class="form-control" bind="Value[r, c]" /></td>
+             {
+                var col = c;
+                <td><input type="number" class="form-control" bind="@Value[row, col]" /></td>
             }
         </tr>
 
@@ -39,23 +41,27 @@
     {
         Expand(Value.GetLength(0) + 1, Value.GetLength(1));
         ValueChanged(Value);
+        this.StateHasChanged();
     }
     void RemoveRow()
     {
         Compress(Value.GetLength(0) - 1, Value.GetLength(1));
         ValueChanged(Value);
+        this.StateHasChanged();
     }
 
     void AddColumn()
     {
         Expand(Value.GetLength(0), Value.GetLength(1) + 1);
         ValueChanged(Value);
+        this.StateHasChanged();
     }
 
     void RemoveColumn()
     {
         Compress(Value.GetLength(0), Value.GetLength(1) - 1);
         ValueChanged(Value);
+        this.StateHasChanged();
     }
 
     void Expand(int newRows, int newCols)

@@ -14,14 +14,24 @@
     </div>
     <div class="my-3">
         <div class="btn btn-secondary btn-file">
-            Import from CSV <input type="file" onchange="handleFileSelect(this.files);"/>
+            Import from CSV <input type="file" onchange="handleFileSelect(this.files);" />
         </div>
     </div>
-     <Matrix Value="@matrix" ValueChanged="@((m) => matrix = (int[,])m)"></Matrix>
+    <Matrix Value="@matrix" ValueChanged="@((m) => matrix = (int[,])m)"></Matrix>
+    <div class="my-3">
+        <div class="btn btn-primary" onclick="@CalculateHouseholder">
+            Perform householder
+        </div>
+    </div>
+    @if (householderTransformation != null)
+    {
+        <ReadonlyHouseholders transformation="householderTransformation"></ReadonlyHouseholders>
+    }
 </div>
 
 @functions {
     int[,] matrix = new int[5,5];
+    HouseholderTransformation householderTransformation;
 
 
     protected override void OnInit()
@@ -36,5 +46,12 @@
         this.StateHasChanged();
     }
 
+    void CalculateHouseholder()
+    {
+        double[,] dst = new double[matrix.GetLength(0), matrix.GetLength(1)];
+        Array.Copy(matrix, dst, matrix.Length);
+        householderTransformation = new HouseholderTransformation(Matrix<double>.Build.DenseOfArray(dst));
+        householderTransformation.Perform();
+    }
 }
 

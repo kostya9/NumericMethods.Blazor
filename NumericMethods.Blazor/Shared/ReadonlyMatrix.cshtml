@@ -1,0 +1,21 @@
+﻿<div class="col-md-4">
+    <table class="table table-bordered">
+        @for (var r = 0; r < Value.GetLength(0); r++)
+        {
+            <tr>
+                @for (var c = 0; c < Value.GetLength(1); c++)
+                {
+                    <td>@Value[r, c].ToString("0.###")</td>
+                }
+            </tr>
+
+        }
+    </table>
+</div>
+
+
+@functions  {
+    [ParameterAttribute]
+    private double[,] Value { get; set; } = new double[0, 0];
+
+}
