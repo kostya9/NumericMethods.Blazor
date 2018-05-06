@@ -64,7 +64,22 @@
         CalculateHouseholder();
         var left = householderTransformation.LeftHouseHolder.Reverse().Aggregate((a, c) => a * c);
         var right = householderTransformation.RightHouseholder.Aggregate((a, c) => a * c);
-        svdTransformation = new SVD(householderTransformation.Result, left, right);
+        var result = householderTransformation.Result;
+        if(result.RowCount > result.ColumnCount)
+        {
+            var times = result.RowCount - result.ColumnCount;
+            while (times-- != 0)
+                result = result.RemoveRow(result.RowCount - 1);
+
+        }
+        else if (result.ColumnCount > result.RowCount)
+        {
+            var times = result.ColumnCount - result.RowCount;
+            while (times-- != 0)
+                result = result.RemoveColumn(result.ColumnCount - 1);
+
+        }
+        svdTransformation = new SVD(result, left, right);
         svdTransformation.Perform();
     }
 }

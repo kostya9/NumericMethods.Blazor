@@ -39,20 +39,47 @@ namespace NumericMethods.Blazor.SVD
 
         public void Perform()
         {
-            var t = GenerateFirstT();
-            Console.WriteLine(t);
-            Sigma = t * _matrix;
+            List<Matrix<double>> sMatrices = new List<Matrix<double>>();
+            List<Matrix<double>> tMatrices = new List<Matrix<double>>();
+
+            var n = _matrix.RowCount - 1;
+            var firstT = GenerateFirstT();
+            var b  =  _matrix * firstT;
+
+            int tCount = n - 1;
+            int sCount = n - 1;
+            int tIteration = 1;
+            int sIteration = 0;
+            bool performed = true;
+            while(performed)
+            {
+                performed = false;
+                if(sIteration < sCount)
+                {
+                    var s = GenerateS(b, sIteration++);
+                    b = s * b;
+                    performed = true;
+                }
+
+                if(tIteration < tCount)
+                {
+                    var t = GenerateT(b, tIteration++);
+                    b =  b * t;
+                    performed = true;
+                }
+                Console.WriteLine(b);
+            }
+            Sigma = b;
         }
 
         private Matrix<double> GenerateFirstT()
         {
             var n = _matrix.RowCount - 1;
-            var d = (_matrix[n, n] * _matrix[n, n] - _matrix[n - 1, n - 1] * _matrix[n - 1, n - 1] + _matrix[n - 1, n] * _matrix[n - 1, n] - _matrix[n - 2, n - 1]) / 
-                (2 * _matrix[n - 1, n] * _matrix[n - 1, n - 1]);
-            var r = d >= 0 ? (-d - Math.Sqrt(1 + d * d)) : (d + Math.Sqrt(1 + d * d));
-            var thau = _matrix[n, n] * _matrix[n, n] + _matrix[n - 1, n] - _matrix[n - 1, n] * _matrix[n - 1, n - 1] / r;
-            var t = _matrix[0, 0] * _matrix[0, 1] / (_matrix[0, 0] * _matrix[0, 0] - thau);
-            Console.WriteLine(t);
+            var d = (Square(_matrix[n, n]) - Square(_matrix[n - 1, n - 1]) + Square(_matrix[n, n - 1]) - Square(_matrix[n - 1, n - 2])) / 
+                (2 * _matrix[n, n - 1] * _matrix[n - 1, n - 1]);
+            var r = d >= 0 ? (-d - Math.Sqrt(1 + d * d)) : (-d + Math.Sqrt(1 + d * d));
+            var thau = Square(_matrix[n, n]) + Square(_matrix[n, n - 1]) - (_matrix[n, n - 1] * _matrix[n - 1, n - 1]) / r;
+            var t = _matrix[0, 0] * _matrix[1, 0] / (Square(_matrix[0, 0]) - thau);
             return GenerateHivens(_matrix, 0, t);
         }
 
@@ -66,7 +93,7 @@ namespace NumericMethods.Blazor.SVD
         private Matrix<double> GenerateS(Matrix<double> p, int iteration)
         {
             var i = iteration;
-            var t = p[i + i, i] / p[i, i];
+            var t = p[i, i + 1] / p[i, i];
             return GenerateHivens(p, iteration, t);
         }
 
@@ -74,12 +101,17 @@ namespace NumericMethods.Blazor.SVD
         {
             var c = 1 / Math.Sqrt(1 + t * t);
             var s = t / Math.Sqrt(1 + t * t);
-            var identity = Matrix<double>.Build.DiagonalIdentity(m.RowCount);
+            var identity = Matrix<double>.Build.DenseIdentity(m.RowCount, m.RowCount);
             identity[i, i] = c;
             identity[i + 1, i + 1] = c;
             identity[i + 1, i] = s;
             identity[i, i + 1] = -s;
             return identity;
+        }
+
+        private double Square(double d)
+        {
+            return d * d;
         }
     }
 }
