@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NumericMethods.Blazor.SVD
 {
+    /// <summary>
+    /// SVD for lower diagonal matrix
+    /// </summary>
     public class SVD
     {
         private readonly Matrix<double> _matrix;
@@ -37,6 +40,7 @@ namespace NumericMethods.Blazor.SVD
             _rightH = rightH;
         }
 
+        // TODO: Doesn't work as expected
         public void Perform()
         {
             List<Matrix<double>> sMatrices = new List<Matrix<double>>();
@@ -80,33 +84,21 @@ namespace NumericMethods.Blazor.SVD
             var r = d >= 0 ? (-d - Math.Sqrt(1 + d * d)) : (-d + Math.Sqrt(1 + d * d));
             var thau = Square(_matrix[n, n]) + Square(_matrix[n, n - 1]) - (_matrix[n, n - 1] * _matrix[n - 1, n - 1]) / r;
             var t = _matrix[0, 0] * _matrix[1, 0] / (Square(_matrix[0, 0]) - thau);
-            return GenerateHivens(_matrix, 0, t);
+            return HivensTransformation.GenerateRotation(_matrix, 0, t);
         }
 
         private Matrix<double> GenerateT(Matrix<double> b, int iteration)
         {
             var i = iteration;
             var t = b[i - 1, i + 1] / b[i, i];
-            return GenerateHivens(b, iteration, t);
+            return HivensTransformation.GenerateRotation(b, iteration, t);
         }
 
         private Matrix<double> GenerateS(Matrix<double> p, int iteration)
         {
             var i = iteration;
             var t = p[i, i + 1] / p[i, i];
-            return GenerateHivens(p, iteration, t);
-        }
-
-        private Matrix<double> GenerateHivens(Matrix<double> m, int i, double t)
-        {
-            var c = 1 / Math.Sqrt(1 + t * t);
-            var s = t / Math.Sqrt(1 + t * t);
-            var identity = Matrix<double>.Build.DenseIdentity(m.RowCount, m.RowCount);
-            identity[i, i] = c;
-            identity[i + 1, i + 1] = c;
-            identity[i + 1, i] = s;
-            identity[i, i + 1] = -s;
-            return identity;
+            return HivensTransformation.GenerateRotation(p, iteration, t);
         }
 
         private double Square(double d)

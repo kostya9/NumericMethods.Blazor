@@ -42,11 +42,11 @@ namespace NumericMethods.Blazor.SVD
             }
             else if(rows > cols)
             {
-                leftHCount = t;
+                leftHCount = t - 1;
                 rightHCount = t;
 
                 if (rows > cols + 1)
-                    leftHCount = t - 1;
+                    leftHCount = t;
             }
             else
             {
@@ -77,6 +77,11 @@ namespace NumericMethods.Blazor.SVD
                     _leftHouseHolder.Add(leftMatrix);
                     performed = true;
                 }
+            }
+
+            if(rows > cols)
+            {
+                // TODO: Hivens for racing left elements
             }
 
             Result = matrix;
