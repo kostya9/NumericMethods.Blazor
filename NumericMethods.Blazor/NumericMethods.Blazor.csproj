@@ -27,6 +27,7 @@
     <None Include="Shared\Matrix.cshtml" />
     <None Include="Shared\ReadonlyHouseholders.cshtml" />
     <None Include="Shared\ReadonlyMatrix.cshtml" />
+    <None Include="Shared\ReadonlySVD.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +54,14 @@
     <Content Update="Shared\_ViewImports.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <BlazorGenerate Remove="Shared\ReadonlySVD.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Shared\ReadonlySVD.cshtml" />
   </ItemGroup>
 
 </Project>

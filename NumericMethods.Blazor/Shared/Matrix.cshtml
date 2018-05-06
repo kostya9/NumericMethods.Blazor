@@ -41,27 +41,23 @@
     {
         Expand(Value.GetLength(0) + 1, Value.GetLength(1));
         ValueChanged(Value);
-        this.StateHasChanged();
     }
     void RemoveRow()
     {
         Compress(Value.GetLength(0) - 1, Value.GetLength(1));
         ValueChanged(Value);
-        this.StateHasChanged();
     }
 
     void AddColumn()
     {
         Expand(Value.GetLength(0), Value.GetLength(1) + 1);
         ValueChanged(Value);
-        this.StateHasChanged();
     }
 
     void RemoveColumn()
     {
         Compress(Value.GetLength(0), Value.GetLength(1) - 1);
         ValueChanged(Value);
-        this.StateHasChanged();
     }
 
     void Expand(int newRows, int newCols)

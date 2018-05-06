@@ -19,19 +19,24 @@
     </div>
     <Matrix Value="@matrix" ValueChanged="@((m) => matrix = (int[,])m)"></Matrix>
     <div class="my-3">
-        <div class="btn btn-primary" onclick="@CalculateHouseholder">
-            Perform householder
+        <div class="btn btn-primary" onclick="@CalculateSVD">
+            Perform SVD
         </div>
     </div>
     @if (householderTransformation != null)
     {
         <ReadonlyHouseholders transformation="householderTransformation"></ReadonlyHouseholders>
     }
+    @if (svdTransformation != null)
+    {
+        <ReadonlySVD transformation="svdTransformation"></ReadonlySVD>
+    }
 </div>
 
 @functions {
     int[,] matrix = new int[5,5];
     HouseholderTransformation householderTransformation;
+    SVD svdTransformation;
 
 
     protected override void OnInit()
@@ -52,6 +57,15 @@
         Array.Copy(matrix, dst, matrix.Length);
         householderTransformation = new HouseholderTransformation(Matrix<double>.Build.DenseOfArray(dst));
         householderTransformation.Perform();
+    }
+
+    void CalculateSVD()
+    {
+        CalculateHouseholder();
+        var left = householderTransformation.LeftHouseHolder.Reverse().Aggregate((a, c) => a * c);
+        var right = householderTransformation.RightHouseholder.Aggregate((a, c) => a * c);
+        svdTransformation = new SVD(householderTransformation.Result, left, right);
+        svdTransformation.Perform();
     }
 }
 
