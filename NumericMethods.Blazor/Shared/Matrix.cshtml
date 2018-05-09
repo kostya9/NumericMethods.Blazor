@@ -74,6 +74,13 @@
     void Expand(int newRows, int newCols)
     {
         var newMatrix = new int[newRows, newCols];
+        for (int r = 0; r < newRows; r++)
+        {
+            for (int c = 0; c < newCols; c++)
+            {
+                newMatrix[r, c] = 1;
+            }
+        }
         Array.Copy(Value, newMatrix, Value.Length);
         Value = newMatrix;
     }
