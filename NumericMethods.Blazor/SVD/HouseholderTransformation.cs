@@ -43,7 +43,7 @@ namespace NumericMethods.Blazor.SVD
             else if(rows > cols)
             {
                 leftHCount = t - 1;
-                rightHCount = t;
+                rightHCount = t - 1;
 
                 if (rows > cols + 1)
                     leftHCount = t;
@@ -81,7 +81,13 @@ namespace NumericMethods.Blazor.SVD
 
             if(rows > cols)
             {
-                // TODO: Hivens for racing left elements
+                var rowToRace = cols;
+                for(int c = cols - 1; c >= 0; c--)
+                {
+                    var tan = - matrix[rowToRace, c] / matrix[c, c];
+                    var hivens = HivensTransformation.GenerateRotation(matrix, cols, c, tan);
+                    matrix = hivens * matrix;
+                }
             }
 
             Result = matrix;

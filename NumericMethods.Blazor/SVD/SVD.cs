@@ -46,58 +46,71 @@ namespace NumericMethods.Blazor.SVD
             List<Matrix<double>> sMatrices = new List<Matrix<double>>();
             List<Matrix<double>> tMatrices = new List<Matrix<double>>();
 
-            var n = _matrix.RowCount - 1;
-            var firstT = GenerateFirstT();
-            var b  =  _matrix * firstT;
+            Sigma = Iterate(_matrix);
+        }
+
+        private Matrix<double> Iterate(Matrix<double> m)
+        {
+            var n = m.RowCount;
+            var firstS = GenerateFirstS();
+            Console.WriteLine("firstS=" + firstS);
+            var b = firstS * m;
+
+            Console.WriteLine(b);
 
             int tCount = n - 1;
             int sCount = n - 1;
-            int tIteration = 1;
-            int sIteration = 0;
+            int tIteration = 0;
+            int sIteration = 1;
             bool performed = true;
-            while(performed)
+            while (performed)
             {
                 performed = false;
-                if(sIteration < sCount)
+                if (tIteration < tCount)
+                {
+                    var t = GenerateT(b, tIteration++);
+                    b = b * t;
+                    performed = true;
+                    Console.WriteLine(b);
+                }
+
+                if (sIteration < sCount)
                 {
                     var s = GenerateS(b, sIteration++);
                     b = s * b;
                     performed = true;
+                    Console.WriteLine(b);
                 }
-
-                if(tIteration < tCount)
-                {
-                    var t = GenerateT(b, tIteration++);
-                    b =  b * t;
-                    performed = true;
-                }
-                Console.WriteLine(b);
             }
-            Sigma = b;
+
+            return b;
         }
 
-        private Matrix<double> GenerateFirstT()
+        private Matrix<double> GenerateFirstS()
         {
             var n = _matrix.RowCount - 1;
-            var d = (Square(_matrix[n, n]) - Square(_matrix[n - 1, n - 1]) + Square(_matrix[n, n - 1]) - Square(_matrix[n - 1, n - 2])) / 
-                (2 * _matrix[n, n - 1] * _matrix[n - 1, n - 1]);
+            var d = (Square(_matrix[n, n]) - Square(_matrix[n - 1, n - 1]) + Square(_matrix[n - 1, n]) - Square(_matrix[n - 2, n - 1])) / 
+                (2 * _matrix[n - 1, n] * _matrix[n - 1, n - 1]);
             var r = d >= 0 ? (-d - Math.Sqrt(1 + d * d)) : (-d + Math.Sqrt(1 + d * d));
-            var thau = Square(_matrix[n, n]) + Square(_matrix[n, n - 1]) - (_matrix[n, n - 1] * _matrix[n - 1, n - 1]) / r;
-            var t = _matrix[0, 0] * _matrix[1, 0] / (Square(_matrix[0, 0]) - thau);
+            var thau = Square(_matrix[n, n]) + Square(_matrix[n - 1, n]) - (_matrix[n - 1, n] * _matrix[n - 1, n - 1]) / r;
+            var t = _matrix[1, 0] * _matrix[0, 0] / (Square(_matrix[0, 0]) - thau);
+            Console.WriteLine("St=" + t);
             return HivensTransformation.GenerateRotation(_matrix, 0, t);
         }
 
         private Matrix<double> GenerateT(Matrix<double> b, int iteration)
         {
             var i = iteration;
-            var t = b[i - 1, i + 1] / b[i, i];
-            return HivensTransformation.GenerateRotation(b, iteration, t);
+            var t = b[i, i + 1] / b[i, i];
+            Console.WriteLine("Tt=" + t); 
+            return HivensTransformation.GenerateRotation(b, i, t);
         }
 
         private Matrix<double> GenerateS(Matrix<double> p, int iteration)
         {
             var i = iteration;
-            var t = p[i, i + 1] / p[i, i];
+            var t = p[i - 1, i + 1] / p[i - 1, i];
+            Console.WriteLine("St=" + t);
             return HivensTransformation.GenerateRotation(p, iteration, t);
         }
 
