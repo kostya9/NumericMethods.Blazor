@@ -44,6 +44,12 @@
     }
     void RemoveRow()
     {
+        if (Value.GetLength(0) == 3)
+        {
+            RegisteredFunction.Invoke<bool>("Alert", "This tool does not support matrices with dimension < 3");
+            return;
+        }
+
         Compress(Value.GetLength(0) - 1, Value.GetLength(1));
         ValueChanged(Value);
     }
