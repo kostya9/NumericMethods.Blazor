@@ -2,24 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace NumericMethods.Blazor.SVD
+namespace NumericMethods.Blazor.SvdDecomposition.Householder
 {
     /// <summary>
     /// Performs householder transformations to change the matrix to a down two-diagonal one
     /// </summary>
-    public class HouseholderTransformation
+    public class LowerHouseholderTransformation : IHouseholderTransformation
     {
         private readonly Matrix<double> _matrix;
         private List<Matrix<double>> _rightHouseHolder;
         private List<Matrix<double>> _leftHouseHolder;
+        private List<Matrix<double>> _hivens;
+
 
         public Matrix<double> Result { get; private set; }
         public IReadOnlyCollection<Matrix<double>> RightHouseholder => _rightHouseHolder;
         public IReadOnlyCollection<Matrix<double>> LeftHouseHolder => _leftHouseHolder;
+        public IReadOnlyCollection<Matrix<double>> Hivens => _hivens;
 
-        public HouseholderTransformation(Matrix<double> matrix)
+
+        public LowerHouseholderTransformation(Matrix<double> matrix)
         {
             _matrix = matrix;
         }
@@ -54,7 +57,6 @@ namespace NumericMethods.Blazor.SVD
                 rightHCount = t;
             }
 
-
             Matrix<double> matrix = _matrix;
             int leftIteration = 0;
             int rightIteration = 0;
@@ -79,13 +81,15 @@ namespace NumericMethods.Blazor.SVD
                 }
             }
 
+            _hivens = new List<Matrix<double>>();
             if(rows > cols)
             {
                 var rowToRace = cols;
                 for(int c = cols - 1; c >= 0; c--)
                 {
                     var tan = - matrix[rowToRace, c] / matrix[c, c];
-                    var hivens = HivensTransformation.GenerateRotation(matrix, cols, c, tan);
+                    var hivens = HivensTransformation.GenerateRotation(matrix, cols, c, tan, rows);
+                    _hivens.Add(hivens);
                     matrix = hivens * matrix;
                 }
             }

@@ -24,10 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Shared\ReadonlySvdProcess.cshtml" />
     <None Include="Shared\Matrix.cshtml" />
-    <None Include="Shared\ReadonlyHouseholders.cshtml" />
     <None Include="Shared\ReadonlyMatrix.cshtml" />
-    <None Include="Shared\ReadonlySVD.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,14 +35,6 @@
 
   <ItemGroup>
     <Content Remove="Shared\ReadonlyMatrix.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <BlazorGenerate Remove="Shared\ReadonlyHouseholders.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Shared\ReadonlyHouseholders.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,11 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <BlazorGenerate Remove="Shared\ReadonlySVD.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="Shared\ReadonlySVD.cshtml" />
+    <BlazorGenerate Remove="Shared\ReadonlySvdProcess.cshtml" />
   </ItemGroup>
 
 </Project>

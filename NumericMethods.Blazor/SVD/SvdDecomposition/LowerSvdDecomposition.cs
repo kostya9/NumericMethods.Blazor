@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NumericMethods.Blazor.SVD
+namespace NumericMethods.Blazor.SvdDecomposition.SvdDecomposition
 {
     /// <summary>
     /// SVD for lower diagonal matrix
     /// </summary>
-    public class SVD
+    public class LowerSvdDecomposition : ISvdDecomposition
     {
         private readonly Matrix<double> _matrix;
         private readonly Matrix<double> _leftH;
@@ -19,7 +19,7 @@ namespace NumericMethods.Blazor.SVD
         public Matrix<double> Sigma { get; private set; }
         public Matrix<double> V { get; private set; }
 
-        public SVD(Matrix<double> matrix, Matrix<double> leftH, Matrix<double> rightH)
+        public LowerSvdDecomposition(Matrix<double> matrix, Matrix<double> leftH, Matrix<double> rightH)
         {
             if (matrix.ColumnCount != matrix.RowCount)
                 throw new ArgumentException("Expected matrix to be quadratic");

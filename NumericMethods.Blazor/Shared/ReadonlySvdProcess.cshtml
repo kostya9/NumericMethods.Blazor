@@ -1,0 +1,62 @@
+﻿
+<div class="btn btn-info" onclick="@ToggleHouseholder">Householder two-diagonal steps @(householderToggle ? "-" : "+")</div>
+@if (householderToggle)
+{
+    <div class="card card-body">
+        <h1>Resulted</h1>
+        <ReadonlyMatrix Value="@output.HouseholderResult.ToArray()"></ReadonlyMatrix>
+        <h1>Householders</h1>
+        <h2>left</h2>
+        <div class="row">
+            @foreach (var h in output.LeftHouseholders)
+            {
+                <ReadonlyMatrix Value="@h.ToArray()"></ReadonlyMatrix>
+            }
+        </div>
+
+        <h2>right</h2>
+        <div class="row">
+            @foreach (var h in output.RightHouseholders)
+            {
+                <ReadonlyMatrix Value="@h.ToArray()"></ReadonlyMatrix>
+            }
+        </div>
+
+        <h2>hivens</h2>
+        <div class="row">
+            @foreach (var h in output.RaceHivens)
+            {
+                <ReadonlyMatrix Value="@h.ToArray()"></ReadonlyMatrix>
+            }
+        </div>
+    </div>
+}
+
+@*
+    <div class="btn btn-info" onclick="@ToggleSvd">SVD decomposition steps @(svdToggle ? "-" : "+")</div>
+    @if (svdToggle)
+    {
+        <div class="card card-body">
+            <h1>Resulted</h1>
+            <ReadonlyMatrix Value="@output.Iterations.First().Sigma.ToArray()"></ReadonlyMatrix>
+        </div>
+    }
+*@
+
+@functions {
+[ParameterAttribute]
+private SvdProcessOutput output { get; set; }
+
+bool householderToggle = true;
+bool svdToggle = false;
+
+void ToggleSvd()
+{
+    svdToggle = !svdToggle;
+}
+
+void ToggleHouseholder()
+{
+    householderToggle = !householderToggle;
+}
+}
